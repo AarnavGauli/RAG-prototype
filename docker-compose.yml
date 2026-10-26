@@ -1,0 +1,30 @@
+# docker compose up --build   ->  http://localhost:3000
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PDFI_DATA_DIR: /data
+      PDFI_COOKIE_SECURE: ${PDFI_COOKIE_SECURE:-false}
+    volumes:
+      - pdfi-data:/data # database, uploads, FAISS index and the embedding-model cache
+    ports:
+      - "127.0.0.1:8000:8000" # API + /docs, loopback only
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BACKEND_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  pdfi-data:

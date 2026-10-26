@@ -1,0 +1,22 @@
+[project]
+name = "pdf-intelligence-backend"
+version = "1.0.0"
+description = "PDF Intelligence API: RAG over PDFs with validated citations"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["B008", "B027", "E501", "RUF001", "RUF012", "SIM117"]  # B008: FastAPI Depends() in defaults is idiomatic
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["error::pytest.PytestUnraisableExceptionWarning"]

@@ -1,0 +1,37 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# local data: databases, uploads, vector indexes, model caches
+data/
+backend/data/
+backend/.e2e-data/
+*.db
+*.db-wal
+*.db-shm
+*.faiss
+uploads/
+models/
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# node / next / playwright
+node_modules/
+frontend/.next/
+frontend/.next-*/
+frontend/out/
+frontend/test-results/
+frontend/playwright-report/
+frontend/next-env.d.ts
+*.tsbuildinfo
+
+# misc
+.DS_Store
+*.log

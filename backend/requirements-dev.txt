@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest==9.1.1
+ruff==0.17.1
+reportlab==5.0.1  # only to regenerate the sample PDF (scripts/make_sample_pdf.py)
