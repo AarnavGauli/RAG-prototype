@@ -154,10 +154,46 @@ class OpenAICompatibleLLM(LLMProvider):
         return extract_json_object(content or "")
 
 
+class GeminiLLM(OpenAICompatibleLLM):
+    """Google Gemini through its OpenAI-compatible endpoint."""
+
+    name = "gemini"
+    BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai"
+
+    def __init__(self, settings: Settings) -> None:
+        key = settings.gemini_api_key or settings.llm_api_key
+        super().__init__(
+            settings.model_copy(
+                update={
+                    "llm_base_url": self.BASE_URL,
+                    "llm_model": settings.llm_model or "gemini-2.5-flash",
+                    "llm_api_key": key,
+                }
+            )
+        )
+
+    def check_ready(self) -> None:
+        if not self._key:
+            raise ProviderNotConfigured(
+                "No Gemini API key is configured. Set GEMINI_API_KEY (or PDFI_LLM_API_KEY) in the backend "
+                "environment, or choose another provider with PDFI_LLM_PROVIDER.",
+                code="llm_not_configured",
+            )
+
+
 def build_llm_provider(settings: Settings) -> LLMProvider:
+    if settings.llm_provider == "gemini":
+        return GeminiLLM(settings)
     if settings.llm_provider == "openai":
         return OpenAICompatibleLLM(settings)
     return AnthropicLLM(settings)
 
 
-__all__ = ["AnthropicLLM", "LLMMessage", "OpenAICompatibleLLM", "build_llm_provider", "extract_json_object"]
+__all__ = [
+    "AnthropicLLM",
+    "GeminiLLM",
+    "LLMMessage",
+    "OpenAICompatibleLLM",
+    "build_llm_provider",
+    "extract_json_object",
+]

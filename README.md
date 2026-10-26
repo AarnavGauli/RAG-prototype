@@ -57,6 +57,7 @@ Uploading and indexing work without any key. **Answering needs an LLM**; without
 | Provider | Settings |
 |---|---|
 | Anthropic (default) | `ANTHROPIC_API_KEY=...` |
+| Google Gemini | `PDFI_LLM_PROVIDER=gemini`, `GEMINI_API_KEY=...` (optional `PDFI_LLM_MODEL`, default `gemini-2.5-flash`) |
 | OpenAI | `PDFI_LLM_PROVIDER=openai`, `PDFI_LLM_API_KEY=...`, `PDFI_LLM_MODEL=gpt-4o-mini` |
 | Local (Ollama etc.) | `PDFI_LLM_PROVIDER=openai`, `PDFI_LLM_BASE_URL=http://localhost:11434/v1`, `PDFI_LLM_MODEL=<model>` |
 

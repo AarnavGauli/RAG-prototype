@@ -239,3 +239,20 @@ def test_factories_pick_the_configured_provider(tmp_path: Path) -> None:
     assert build_embedding_provider(settings(tmp_path, embedding_provider="hash")).model_id == "hash-512"
     assert build_llm_provider(settings(tmp_path, llm_provider="openai")).name == "openai"
     assert build_llm_provider(settings(tmp_path)).name == "anthropic"
+
+
+def test_gemini_uses_openai_compatible_endpoint_with_its_own_key(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls = patch_post(monkeypatch, lambda n, kw: chat('{"answer": "g"}'))
+    llm = build_llm_provider(settings(tmp_path, llm_provider="gemini", gemini_api_key=SECRET))
+    assert llm.name == "gemini" and llm.model == "gemini-2.5-flash"
+    assert llm.generate_structured(system="s", messages=MSGS, schema=SCHEMA, max_tokens=5) == {"answer": "g"}
+    assert calls[0]["url"] == "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+    assert calls[0]["headers"] == {"Authorization": f"Bearer {SECRET}"}
+
+
+def test_gemini_without_key_explains_how_to_configure(tmp_path: Path) -> None:
+    with pytest.raises(ProviderNotConfigured) as e:
+        build_llm_provider(settings(tmp_path, llm_provider="gemini")).check_ready()
+    assert "GEMINI_API_KEY" in e.value.message

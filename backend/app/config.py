@@ -9,7 +9,7 @@ from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 EmbeddingProviderName = Literal["fastembed", "hash", "openai"]
-LLMProviderName = Literal["anthropic", "openai"]
+LLMProviderName = Literal["anthropic", "openai", "gemini"]
 
 # Cosine-similarity floors below which a passage is not considered relevant evidence.
 # They depend on the embedding model and should be re-calibrated with the evaluation suite. bge-small cosines are
@@ -59,6 +59,7 @@ class Settings(BaseSettings):
     llm_model: str | None = None  # provider default if unset
     llm_base_url: str = "https://api.openai.com/v1"  # for provider=openai (also Ollama, vLLM, ...)
     llm_api_key: SecretStr | None = None
+    gemini_api_key: SecretStr | None = Field(None, validation_alias="GEMINI_API_KEY")
     anthropic_api_key: SecretStr | None = Field(None, validation_alias="ANTHROPIC_API_KEY")
     llm_max_output_tokens: int = Field(1200, ge=100)
     llm_timeout_seconds: float = Field(60, gt=0)
